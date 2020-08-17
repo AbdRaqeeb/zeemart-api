@@ -56,7 +56,7 @@ class TypeController {
      */
     static async getAllTypes(req, res) {
         try {
-            const types = await Type.findAll();
+            const types = await Type.findAndCountAll();
 
             if (!types) return res.status(404).json({
                 error: true,

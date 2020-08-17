@@ -2,16 +2,16 @@ import 'dotenv/config'
 import { sign } from 'jsonwebtoken';
 import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
 
-import { User, Order } from '../../../database/models';
+import { Admin, Product } from '../../../database/models';
 import { validateUser, validateLogin }  from '../../../middleware/Validate';
 
 /**
- * @class   User controller
+ * @class   Admin controller
  * */
-class UserController {
+class AdminController {
     /***
      * @static
-     * @desc    Register customer
+     * @desc    Register admin
      * @param {object} req express request object
      * @param {object} res express response object
      * @returns {token}  access token
@@ -24,18 +24,18 @@ class UserController {
 
         try {
             const { firstname, lastname, email, password, phone  } = req.body;
-            let user = await User.findOne({
+            let admin = await Admin.findOne({
                 where: {
                     email
                 }
             });
 
-            if (user) return res.status(400).json({
+            if (admin) return res.status(400).json({
                 error: true,
-                msg: 'User already exist'
+                msg: 'Admin already exist'
             });
 
-            user = User.build({
+            admin = Admin.build({
                 firstname,
                 lastname,
                 email,
@@ -45,23 +45,23 @@ class UserController {
 
             // Hash password before saving to database
             const salt = genSaltSync(10);
-            user.password = hashSync(password, salt);
+            admin.password = hashSync(password, salt);
 
-            await user.save();
+            await admin.save();
 
             const payload = {
-                user: {
-                    id: user.user_id,
-                    role: user.role,
-                    email: user.email
+                admin: {
+                    id: admin.admin_id,
+                    role: admin.role,
+                    email: admin.email
                 }
-            }
+            };
 
             sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
                 if (err) throw err;
                 res.json({
                     error: false,
-                    msg: 'User created successfully',
+                    msg: 'Admin created successfully',
                     token
                 })
             })
@@ -75,7 +75,7 @@ class UserController {
 
 
     /**
-     * @desc    login a customer
+     * @desc    login a admin
      * @static
      * @param {object} req express request object
      * @param {object} res express response object
@@ -89,33 +89,33 @@ class UserController {
 
         const { email, password } = req.body;
         try {
-            const user = await User.findOne({
+            const admin = await Admin.findOne({
                 where: {
                     email
                 }
             })
 
-            if (!user) return res.status(404).json({
+            if (!admin) return res.status(404).json({
                 error: true,
                 msg: 'Invalid email'
             });
 
-            const validPassword = compareSync(password, user.password);
+            const validPassword = compareSync(password, admin.password);
             if (!validPassword) return res.status(400).json({
                 error: true,
                 msg: 'Invalid password'
             });
 
             const payload = {
-                user: {
-                    id: user.user_id,
-                    email: user.email,
-                    role: user.role,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
-                    phone: user.phone,
-                    address: user.address,
-                    billing_address: user.billing_address
+                admin: {
+                    id: admin.admin_id,
+                    email: admin.email,
+                    role: admin.role,
+                    firstname: admin.firstname,
+                    lastname: admin.lastname,
+                    phone: admin.phone,
+                    address: admin.address,
+                    billing_address: admin.billing_address
                 }
             };
 
@@ -135,27 +135,27 @@ class UserController {
     }
 
     /**
-     * @desc    Get a logged in user
+     * @desc    Get a logged in admin
      * @static
      * @param {object} req express request object
      * @param {object} res express response object
-     * @returns {object}  json object user details
+     * @returns {object}  json object admin details
      * @access  Private
      */
     static async loggedIn(req, res) {
         try {
-            const user = await User.findByPk(req.user.id, {
-                include: Order
+            const admin = await Admin.findByPk(req.admin.id, {
+                include: Product
             });
-            if (!user) return res.status(404).json({
+            if (!admin) return res.status(404).json({
                 error: true,
-                msg: 'User with this id does not exist'
+                msg: 'Admin with this id does not exist'
             })
 
             return res.status(200).json({
                 error: false,
                 msg: 'Successful',
-                user
+                admin
             })
         } catch (e) {
             console.error(e.message);
@@ -164,11 +164,11 @@ class UserController {
     }
 
     /**
-     * @desc    Update a user profile
+     * @desc    Update a admin profile
      * @static
      * @param {object} req express request object
      * @param {object} res express response object
-     * @returns {object}  json object user details
+     * @returns {object}  json object admin details
      * @access  Private
      */
     static async update(req, res) {
@@ -176,18 +176,18 @@ class UserController {
         if (error) return  res.status(400).json(error.details[0].message);
 
         try {
-            const user = await User.findByPk(req.user.id);
+            const admin = await Admin.findByPk(req.admin.id);
 
-            if (!user) return res.status(404).json({
+            if (!admin) return res.status(404).json({
                 error: true,
-                msg: 'User not found'
+                msg: 'Admin not found'
             });
 
-            const updatedUser = await User.update(req.body);
+            const updatedUser = await Admin.update(req.body);
 
             return res.status(201).json({
                 error: false,
-                msg: 'User updated successfully',
+                msg: 'Admin updated successfully',
                 updatedUser
             })
         } catch (e) {
@@ -197,4 +197,4 @@ class UserController {
     }
 }
 
-export default UserController;
+export default AdminController;

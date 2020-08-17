@@ -5,12 +5,13 @@ import fileUpload from 'express-fileupload';
 import Cloudinary from './cloudinary/cloudinary';
 import Models from './database/models'
 
-import users from './modules/users/routes/users';
+import users from './modules/users/routes/UserRoutes';
+import admin from './modules/admin/routes/AdminRoutes';
 import types from './modules/types/routes/TypeRoutes';
 import products from './modules/products/routes/ProductRoutes';
 import categories from './modules/category/routes/CategoryRoutes';
 import orders from './modules/orders/routes/OrderRoutes';
-
+import stats from './modules/stats/routes/StatRoutes';
 const app = express();
 
 app.use(express.json({ extended: false }));
@@ -22,10 +23,12 @@ app.use(fileUpload({
 
 
 app.use('/api/v1/users', users);
+app.use('/api/v1/admin', admin);
 app.use('/api/v1/types', types);
 app.use('/api/v1/products', products);
 app.use('/api/v1/categories', categories);
 app.use('/api/v1/orders', orders);
+app.use('/api/v1/stats', stats);
 
 app.get('/', (req, res) => res.send('Welcome to Zee Mart'));
 
@@ -33,7 +36,7 @@ app.get('/', (req, res) => res.send('Welcome to Zee Mart'));
 Cloudinary();
 
 // Sync database
-Models.sequelize.sync({ force: true })
+Models.sequelize.sync()
     .then(() => console.log('Database synced'))
     .catch(err => console.log('Unable to sync database', err));
 

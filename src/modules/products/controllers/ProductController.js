@@ -1,6 +1,5 @@
 import {Product} from '../../../database/models';
-import {v2 as cloudinary} from 'cloudinary';
-import fs from 'fs';
+import { uploadImage } from '../../../helpers/upload';
 import {validateProduct} from '../../../middleware/Validate';
 import db from '../../../database/models/index';
 import {getPagination, getPagingData} from '../../../middleware/Pagination';
@@ -25,23 +24,7 @@ class ProductController {
         const {error} = validateProduct(req.body);
         if (error) return res.status(400).json(error.details[0].message);
 
-        // name of file
-        let product_image = req.files.image;
-
-        //image file path
-        const filePath = `./src/photos/image${Date.now()}.jpg`;
-
-        //move image to the photo directory
-        await product_image.mv(filePath);
-
-        //upload image to cloudinary
-        const result = await cloudinary.uploader.upload(filePath, {
-            folder: 'Zee-mart Products'
-        });
-
-        // Delete image on server after upload
-        fs.unlinkSync(filePath);
-        console.log('Photo deleted');
+        const image = uploadImage(req.files.image, 1);
 
         const {name, description, unit, price, sale_price, quantity, discount} = req.body;
         try {
@@ -65,7 +48,7 @@ class ProductController {
                 sale_price,
                 quantity,
                 discount,
-                image: result.secure_url
+                image
             });
 
             return res.status(201).json({
@@ -152,6 +135,21 @@ class ProductController {
         const {error} = validateProduct(req.body);
         if (error) return res.status(400).json(error.details[0].message);
 
+        const image = uploadImage(req.files.image, 1);
+
+        const { name, description, unit, price, sale_price, quantity, discount } = req.body;
+
+        //updateFile Object
+        const updateFile = {};
+        if (name) updateFile.name = name;
+        if (description) updateFile.description = description;
+        if (unit) updateFile.unit = unit;
+        if (price) updateFile.price = price;
+        if (sale_price) updateFile.sale_price = sale_price;
+        if (quantity) updateFile.quantity = quantity;
+        if (discount) updateFile.discount = discount;
+        updateFile.image = image;
+
         const { id } = req.params;
         try {
             const product = await Product.findByPk(id);
@@ -161,7 +159,7 @@ class ProductController {
                 msg: 'Product not found'
             });
 
-            const updatedProduct = await product.update(req.body);
+            const updatedProduct = await product.update(updateFile);
 
             return res.status(200).json({
                 error: false,

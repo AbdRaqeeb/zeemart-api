@@ -1,7 +1,7 @@
 import { Order, OrderDetail, Payment } from '../../../database/models';
 import db from '../../../database/models/index';
 import { validateOrder } from '../../../middleware/Validate';
-import generatedReference from '../../../helpers/generator';
+import {generatedReference} from '../../../helpers/generator';
 
 import { getPagingData, getPagination } from '../../../middleware/Pagination';
 
@@ -77,7 +77,11 @@ class OrderController {
 
         try {
             const data = await Order.findAndCountAll({
-                where: limit, offset
+                where: {
+                    limit,
+                    offset
+                },
+                include: Payment
             });
 
             if (!data) return res.status(404).json({
@@ -85,11 +89,14 @@ class OrderController {
                 msg: 'No order found'
             });
 
+            const count = data.count;
+
             const orders = getPagingData(data, page, limit);
 
             return res.status(200).json({
                 error: false,
-                orders
+                orders,
+                count
             })
         } catch (e) {
             console.error(e.message);
@@ -164,8 +171,7 @@ class OrderController {
      * @returns {json} json Order object
      **/
     static async changeOrderStatus(req, res) {
-        const { order_id } = req.params;
-        const { status } = req.body;
+        const { status, order_id } = req.body;
         try {
             const order = await Order.findByPk(order_id);
             if (!order) return res.status(404).json({
