@@ -4,6 +4,7 @@ import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
 
 import { User, Order } from '../../../database/models';
 import { validateUser, validateLogin }  from '../../../middleware/Validate';
+import {where} from "sequelize";
 
 /**
  * @class   User controller
@@ -19,7 +20,7 @@ class UserController {
      */
     static async register(req, res) {
         // Input Validation
-        const { error } = validateUser(req.body);
+        const { error } = validateUser(req.body, 1);
         if (error) return  res.status(400).json(error.details[0].message);
 
         try {
@@ -50,12 +51,10 @@ class UserController {
             await user.save();
 
             const payload = {
-                user: {
                     id: user.user_id,
                     role: user.role,
                     email: user.email
-                }
-            }
+            };
 
             sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
                 if (err) throw err;
@@ -107,7 +106,6 @@ class UserController {
             });
 
             const payload = {
-                user: {
                     id: user.user_id,
                     email: user.email,
                     role: user.role,
@@ -116,7 +114,6 @@ class UserController {
                     phone: user.phone,
                     address: user.address,
                     billing_address: user.billing_address
-                }
             };
 
             sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
@@ -143,14 +140,19 @@ class UserController {
      * @access  Private
      */
     static async loggedIn(req, res) {
+        const { id } = req.user;
+        console.log(req.user);
         try {
-            const user = await User.findByPk(req.user.id, {
+            const user = await User.findByPk(id, {
                 include: Order
             });
+
+            console.log('User: ', user);
+
             if (!user) return res.status(404).json({
                 error: true,
                 msg: 'User with this id does not exist'
-            })
+            });
 
             return res.status(200).json({
                 error: false,
@@ -183,7 +185,13 @@ class UserController {
                 msg: 'User not found'
             });
 
-            const updatedUser = await User.update(req.body);
+            await User.update(req.body, {
+                where: {
+                    user_id: req.user.id
+                }
+            });
+
+            const updatedUser = await User.findByPk(req.user.id);
 
             return res.status(201).json({
                 error: false,

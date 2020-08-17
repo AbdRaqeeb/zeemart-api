@@ -11,6 +11,6 @@ router.post('/', registerAdmin);
 router.get('/', verify, loggedIn);
 router.post('/login', login);
 router.put('/', verify, updateAdmin);
-router.post('/status', [verify, authorize(Roles.SuperAdmin)], updateAdminStatus);
+router.put('/status', [verify, authorize(Roles.SuperAdmin)], updateAdminStatus);
 
 export default router;

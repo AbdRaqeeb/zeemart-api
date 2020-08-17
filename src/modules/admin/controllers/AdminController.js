@@ -19,11 +19,11 @@ class AdminController {
      */
     static async registerAdmin(req, res) {
         // Input Validation
-        const { error } = validateUser(req.body);
+        const { error } = validateUser(req.body, 1);
         if (error) return  res.status(400).json(error.details[0].message);
 
         try {
-            const { firstname, lastname, email, password, phone  } = req.body;
+            const { firstname, lastname, email, password, phone, role  } = req.body;
             let admin = await Admin.findOne({
                 where: {
                     email
@@ -41,6 +41,7 @@ class AdminController {
                 email,
                 password,
                 phone,
+                role
             });
 
             // Hash password before saving to database
@@ -50,11 +51,9 @@ class AdminController {
             await admin.save();
 
             const payload = {
-                admin: {
                     id: admin.admin_id,
                     role: admin.role,
                     email: admin.email
-                }
             };
 
             sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
@@ -93,12 +92,19 @@ class AdminController {
                 where: {
                     email
                 }
-            })
+            });
 
             if (!admin) return res.status(404).json({
                 error: true,
                 msg: 'Invalid email'
             });
+
+            if (admin.status === 'ban' || admin.status === 'suspend') {
+                return res.status(400).json({
+                    error: true,
+                    msg: 'Permission denied'
+                })
+            }
 
             const validPassword = compareSync(password, admin.password);
             if (!validPassword) return res.status(400).json({
@@ -107,7 +113,6 @@ class AdminController {
             });
 
             const payload = {
-                admin: {
                     id: admin.admin_id,
                     email: admin.email,
                     role: admin.role,
@@ -116,7 +121,6 @@ class AdminController {
                     phone: admin.phone,
                     address: admin.address,
                     billing_address: admin.billing_address
-                }
             };
 
             sign(payload, process.env.JWT_SECRET, { expiresIn: 36000 }, (err, token) => {
@@ -144,7 +148,7 @@ class AdminController {
      */
     static async loggedIn(req, res) {
         try {
-            const admin = await Admin.findByPk(req.admin.id, {
+            const admin = await Admin.findByPk(req.user.id, {
                 include: Product
             });
             if (!admin) return res.status(404).json({
@@ -176,14 +180,20 @@ class AdminController {
         if (error) return  res.status(400).json(error.details[0].message);
 
         try {
-            const admin = await Admin.findByPk(req.admin.id);
+            const admin = await Admin.findByPk(req.user.id);
 
             if (!admin) return res.status(404).json({
                 error: true,
                 msg: 'Admin not found'
             });
 
-            const updatedUser = await Admin.update(req.body);
+             await Admin.update(req.body, {
+                where: {
+                    admin_id: req.user.id
+                }
+            });
+
+            const updatedUser = await Admin.findByPk(req.user.id);
 
             return res.status(201).json({
                 error: false,
@@ -213,7 +223,13 @@ class AdminController {
                 msg: 'Admin not found'
             })
 
-            const updatedAdmin = await admin.update({ status }, { force: true });
+            await Admin.update({ status}, {
+                where: {
+                    admin_id: id
+                }
+            });
+
+            const updatedAdmin = await Admin.findByPk(id);
 
             return res.status(200).json({
                 error: false,

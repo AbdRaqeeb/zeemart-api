@@ -30,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 max: 200,
                 min: 2,
-                isAlpha: true
             }
         },
         lastname: {
@@ -39,7 +38,6 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 max: 200,
                 min: 2,
-                isAlpha: true
             }
         },
         email: {
@@ -69,7 +67,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM({
                 values: ['SuperAdmin', 'Admin']
             }),
-            defaultValue: 'Admin'
+            defaultValue: 'Admin',
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM({

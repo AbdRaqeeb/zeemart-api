@@ -1,12 +1,12 @@
 import Joi from 'joi';
 
-export function validateUser(user) {
+export function validateUser(user, key) {
     const schema = Joi.object({
-        email: Joi.string().required().email(),
+        email: (key === 1) ? Joi.string().required().email() : null,
         firstname: Joi.string().required(),
         lastname: Joi.string().required(),
         phone: Joi.number().required().min(11),
-        password: Joi.string().required().min(6),
+        password: (key === 1) ? Joi.string().required().min(6) : null,
         address: Joi.string().optional().allow(''),
         role: Joi.string().optional().allow('')
     });

@@ -30,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         max: 200,
         min: 2,
-        isAlpha: true
       }
     },
     lastname: {
@@ -39,7 +38,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         max: 200,
         min: 2,
-        isAlpha: true
       }
     },
     email: {
