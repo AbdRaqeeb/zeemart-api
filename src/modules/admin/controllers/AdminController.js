@@ -17,7 +17,7 @@ class AdminController {
      * @returns {token}  access token
      * @access  Public
      */
-    static async register(req, res) {
+    static async registerAdmin(req, res) {
         // Input Validation
         const { error } = validateUser(req.body);
         if (error) return  res.status(400).json(error.details[0].message);
@@ -171,7 +171,7 @@ class AdminController {
      * @returns {object}  json object admin details
      * @access  Private
      */
-    static async update(req, res) {
+    static async updateAdmin(req, res) {
         const { error } = validateUser(req.body);
         if (error) return  res.status(400).json(error.details[0].message);
 
@@ -189,6 +189,36 @@ class AdminController {
                 error: false,
                 msg: 'Admin updated successfully',
                 updatedUser
+            })
+        } catch (e) {
+            console.error(e.message);
+            res.status(500).send('Internal server error...')
+        }
+    }
+
+    /**
+     * @desc    Update a admin status
+     * @static
+     * @param {object} req express request object
+     * @param {object} res express response object
+     * @returns {object}  json object admin details
+     * @access  Private
+     */
+    static async updateAdminStatus(req, res) {
+            const { id, status } = req.body;
+        try {
+            const admin = await Admin.findByPk(id);
+            if (!admin) return res.status(404).json({
+                error: true,
+                msg: 'Admin not found'
+            })
+
+            const updatedAdmin = await admin.update({ status }, { force: true });
+
+            return res.status(200).json({
+                error: false,
+                msg: 'Admin updated successfully',
+                updatedAdmin
             })
         } catch (e) {
             console.error(e.message);
