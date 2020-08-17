@@ -1,0 +1,207 @@
+import {Product} from '../../../database/models';
+import {v2 as cloudinary} from 'cloudinary';
+import fs from 'fs';
+import {validateProduct} from '../../../middleware/Validate';
+import db from '../../../database/models/index';
+import {getPagination, getPagingData} from '../../../middleware/Pagination';
+
+const Op = db.Sequelize.Op;
+
+
+/**
+ * @class Products
+ **/
+
+class ProductController {
+    /***
+     * @static
+     * @desc Add a product
+     * @param {object} req express req object
+     * @param {object} res express res object
+     * @returns {object} json product object
+     * @access Private
+     * */
+    static async addProduct(req, res) {
+        const {error} = validateProduct(req.body);
+        if (error) return res.status(400).json(error.details[0].message);
+
+        // name of file
+        let product_image = req.files.image;
+
+        //image file path
+        const filePath = `./src/photos/image${Date.now()}.jpg`;
+
+        //move image to the photo directory
+        await product_image.mv(filePath);
+
+        //upload image to cloudinary
+        const result = await cloudinary.uploader.upload(filePath, {
+            folder: 'Zee-mart Products'
+        });
+
+        // Delete image on server after upload
+        fs.unlinkSync(filePath);
+        console.log('Photo deleted');
+
+        const {name, description, unit, price, sale_price, quantity, discount} = req.body;
+        try {
+            const check = await Product.findOne({
+                where: {
+                    name,
+                    sale_price
+                }
+            });
+
+            if (check) return res.status(400).json({
+                error: true,
+                msg: 'Product already exists'
+            });
+
+            const product = await Product.create({
+                name,
+                description,
+                unit,
+                price,
+                sale_price,
+                quantity,
+                discount,
+                image: result.secure_url
+            });
+
+            return res.status(201).json({
+                error: false,
+                product
+            })
+        } catch (e) {
+            console.error(e.message);
+            res.status(500).send('Internal server error...');
+        }
+    }
+
+    /**
+     *@static
+     * @desc  Get all products
+     * @param {object} req express req object
+     * @param {object} res express res object
+     * @returns {object} json product object
+     **/
+    static async getProducts(req, res) {
+        const {page, size, name} = req.query;
+
+        // Passing query
+        const condition = name ? {name: {[Op.like]: `%${name}%`}} : null;
+
+        const {limit, offset} = getPagination(page, size);
+        try {
+            const data = await Product.findAndCountAll({
+                where: condition, limit, offset
+            });
+
+            if (!data) return res.status(404).json({
+                error: true,
+                msg: 'No product found'
+            });
+
+            const products = getPagingData(data, page, limit);
+
+            return res.status(200).json({
+                error: false,
+                products
+            })
+        } catch (e) {
+            console.error(e.message);
+            res.status(500).send('Internal server error...');
+        }
+    }
+
+    /**
+     *@static
+     * @desc  Get one product
+     * @param {object} req express req object
+     * @param {object} res express res object
+     * @returns {object} json product object
+     **/
+    static async getOneProduct(req, res) {
+        const {id} = req.params;
+        try {
+            const product = await Product.findByPk(id);
+
+            if (!product) return res.status(404).json({
+                error: true,
+                msg: 'Product not found'
+            });
+
+            return res.status(200).json({
+                error: false,
+                product
+            })
+        } catch (e) {
+            console.error(e.message);
+            res.status(500).send('Internal server error...')
+        }
+    }
+
+    /**
+     *@static
+     * @desc  Update a product
+     * @param {object} req express req object
+     * @param {object} res express res object
+     * @returns {object} json product object
+     **/
+    static async updateProduct(req, res) {
+        const {error} = validateProduct(req.body);
+        if (error) return res.status(400).json(error.details[0].message);
+
+        const { id } = req.params;
+        try {
+            const product = await Product.findByPk(id);
+
+            if (!product) return res.status(404).json({
+                error: true,
+                msg: 'Product not found'
+            });
+
+            const updatedProduct = await product.update(req.body);
+
+            return res.status(200).json({
+                error: false,
+                updatedProduct
+            })
+        } catch (e) {
+            console.error(e.message);
+            res.status(500).send('Internal server error...');
+        }
+    }
+
+    /**
+     *@static
+     * @desc  Delete a product
+     * @param {object} req express req object
+     * @param {object} res express res object
+     * @returns {object} json product object
+     **/
+    static async deleteProduct(req, res) {
+        const { id } = req.params;
+
+        try {
+             const product = await Product.findByPk(id);
+
+             if (!product) return res.status(404).json({
+                 error: true,
+                 msg: 'Product not found'
+             });
+
+             await product.destroy({ force: true });
+
+             return res.status(200).json({
+                 error: false,
+                 'msg': 'Product deleted successfully'
+             });
+        } catch (e) {
+            console.error(e.message);
+            res.status(500).send('Internal server error...')
+        }
+    }
+}
+
+export default ProductController;
