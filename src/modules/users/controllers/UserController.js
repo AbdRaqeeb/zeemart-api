@@ -141,7 +141,6 @@ class UserController {
      */
     static async loggedIn(req, res) {
         const { id } = req.user;
-        console.log(req.user);
         try {
             const user = await User.findByPk(id, {
                 include: Order

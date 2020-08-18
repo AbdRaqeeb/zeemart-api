@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true
         },
         amount: {
-            type: DataTypes.DECIMAL(10, 2),
+            type: DataTypes.BIGINT,
             allowNull: false,
             defaultValue: 0.0
         },
@@ -41,9 +41,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true,
-            validate: {
-                max: 50
-            }
         },
         comments: DataTypes.STRING(200),
         address: {
@@ -58,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         phone: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT,
             allowNull: false
         },
         type: {
@@ -66,6 +63,13 @@ module.exports = (sequelize, DataTypes) => {
                 values: ['transfer', 'cash on delivery']
             }),
             defaultValue: 'transfer',
+            allowNull: false
+        },
+        status: {
+            type: DataTypes.ENUM({
+                values: ['pending', 'successful', 'processing', 'canceled']
+            }),
+            defaultValue: 'pending',
             allowNull: false
         }
     }, {

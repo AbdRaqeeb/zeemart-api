@@ -1,9 +1,11 @@
-import { Order, OrderDetail, Payment } from '../../../database/models';
+import { Order, OrderDetails, Payment } from '../../../database/models';
 import db from '../../../database/models/index';
 import { validateOrder } from '../../../middleware/Validate';
 import {generatedReference} from '../../../helpers/generator';
 
 import { getPagingData, getPagination } from '../../../middleware/Pagination';
+
+const Op = db.Sequelize.Op;
 
 /**
  *@class  Orders
@@ -25,38 +27,40 @@ class OrderController {
         const orderDetails = data.data;
 
         try {
-            try {
-                const transaction = db.sequelize.transaction();
-                const order = await Order.create({
-                    amount: data.amount,
-                    reference: generatedReference,
-                    address: data.address,
-                    customer_id: req.user.user_id,
-                    phone: data.phone,
-                    type: data.type
-                }, { transaction });
+                const result = await db.sequelize.transaction(async t => {
+                    const order = await Order.create({
+                        amount: data.amount,
+                        reference: generatedReference,
+                        address: data.address,
+                        customer_id: req.user.id,
+                        user_id: req.user.id,
+                        phone: data.phone,
+                        type: data.type,
+                        comments: data.comments
+                    }, { transaction: t});
 
-                const payment = await Payment.create({
-                    type: order.type,
-                    amount: order.amount
-                }, { transaction });
+                    const payment = await Payment.create({
+                        type: order.type,
+                        amount: order.amount,
+                        order_id: order.order_id
+                    }, { transaction: t });
 
-                const newOrderDetail = orderDetails.map(detail => ({
-                    ...detail,
-                    order_id: order.order_id
-                }));
+                    const newOrderDetail = await orderDetails.map(detail => ({
+                        ...detail,
+                        order_id: order.order_id
+                    }));
 
-                await OrderDetail.bulkCreate(newOrderDetail, { transaction });
-                await transaction.commit();
+                    await OrderDetails.bulkCreate(newOrderDetail, { transaction: t, validate: true, returning: true });
 
+                    return {
+                        order,
+                        payment
+                    }
+                });
                 return res.status(200).json({
                     error: false,
-                    order,
-                    payment
+                    result
                 })
-            } catch  {
-                transaction.rollback();
-            }
         } catch (e) {
             console.error(e.message);
             res.status(500).send('Internal server error...')
@@ -71,15 +75,19 @@ class OrderController {
      * @returns {json} json Order object
      **/
     static async getOrders(req, res) {
-        const { page, size } = req.query;
+        const { page, size, status } = req.query;
 
         const { limit, offset } = getPagination(page, size);
+
+        // Passing query
+        const condition = status ? {status: {[Op.like]: `%${status}%`}} : null;
 
         try {
             const data = await Order.findAndCountAll({
                 where: {
                     limit,
-                    offset
+                    offset,
+                    condition
                 },
                 include: Payment
             });
@@ -115,7 +123,7 @@ class OrderController {
         const { id } = req.params;
         try {
             const order = await Order.findByPk(id, {
-                include: OrderDetail
+                include: OrderDetails
             });
 
             if (!order) return res.status(404).json({

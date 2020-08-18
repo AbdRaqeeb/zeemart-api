@@ -21,14 +21,14 @@ export function validateLogin(user) {
     return schema.validate(user)
 }
 
-export function validateOrder(order) {
+export function validateOrder(order, key) {
     const schema = Joi.object({
         address: Joi.string().required().max(200),
-        customer_id: Joi.number().required(),
         amount: Joi.number().required(),
         phone: Joi.number().required(),
         comments: Joi.string().max(255).optional().allow(''),
-        data: Joi.array().items(Joi.object()).required()
+        data: Joi.array().items(Joi.object()).required(),
+        type: Joi.string().optional()
     });
     return schema.validate(order);
 }
