@@ -2,11 +2,11 @@ import Joi from 'joi';
 
 export function validateUser(user, key) {
     const schema = Joi.object({
-        email: (key === 1) ? Joi.string().required().email() : null,
-        firstname: Joi.string().required(),
-        lastname: Joi.string().required(),
-        phone: Joi.number().required().min(11),
-        password: (key === 1) ? Joi.string().required().min(6) : null,
+        email: (key === 1) ? Joi.string().required().email() : Joi.string().optional(),
+        firstname: (key === 1) ? Joi.string().required() : Joi.string().optional(),
+        lastname: (key === 1) ? Joi.string().required() : Joi.string().optional(),
+        phone: (key === 1) ? Joi.number().required() : Joi.number().optional(),
+        password: (key === 1) ? Joi.string().required() : Joi.string().optional(),
         address: Joi.string().optional().allow(''),
         role: Joi.string().optional().allow('')
     });
@@ -40,24 +40,24 @@ export function validateType(type) {
     return schema.validate(type);
 }
 
-export function validateProduct(product) {
+export function validateProduct(product, key) {
     const schema = Joi.object({
-        name: Joi.string().required().max(200),
+        name: (key === 1) ? Joi.string().required().max(200) : Joi.string().optional().max(200),
         description: Joi.string().optional().allow(''),
-        unit: Joi.number().optional().allow(''),
+        unit: Joi.string().optional().allow(''),
         price: Joi.number().optional().allow(''),
-        sale_price: Joi.number().required(),
+        sale_price: (key === 1) ? Joi.number().required() : Joi.number().optional(),
         quantity: Joi.number().optional().allow(''),
         discount: Joi.number().optional().allow(''),
-        image: Joi.any().meta({ swaggerType: 'file' } ).required().description('Image file')
+        category_id: (key ===1 ) ? Joi.number().required() : Joi.number().optional()
     });
     return schema.validate(product);
 }
 
-export function validateCategory(category) {
+export function validateCategory(category, key) {
     const schema = Joi.object({
-        name: Joi.string().required().max(100),
-        image: Joi.any().meta({ swaggerType: 'file' }).required().description('Image file')
+        name: (key === 1) ? Joi.string().required().max(100) : Joi.string().optional(),
+        type: (key === 1) ? Joi.number().required() : Joi.number().optional()
     });
     return schema.validate(category);
 }

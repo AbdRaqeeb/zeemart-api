@@ -16,12 +16,10 @@ class CategoryController {
      * @returns {object} json category object
      **/
     static async addCategory(req, res) {
-        const {error} = validateCategory(req.body);
+        const {error} = validateCategory(req.body, 1);
         if (error) return res.status(400).json(error.details[0].message);
 
-        const image = uploadImage(req.files.image);
-
-        const {name} = req.body;
+        const {name, type } = req.body;
         try {
             const check = await Category.findOne({
                 where: {
@@ -32,11 +30,19 @@ class CategoryController {
             if (check) return res.status(400).json({
                 error: true,
                 msg: 'Category already exist'
-            })
+            });
+
+            if (!req.files) return res.status(400).json({
+                error: true,
+                msg: 'Please select an image'
+            });
+
+            const image = await uploadImage(req.files.image);
 
             const category = await Category.create({
                 name,
-                image
+                image,
+                type_id: type
             });
 
             return res.status(200).json({
@@ -118,7 +124,6 @@ class CategoryController {
         const {error} = validateCategory(req.body);
         if (error) return res.status(400).json(error.details[0].message);
 
-        const image = uploadImage(req.files.image);
         const {name} = req.body;
         const {id} = req.params;
         try {
@@ -129,7 +134,9 @@ class CategoryController {
                 msg: 'Category not found'
             });
 
-            const updatedCategory = await category.update({name, image});
+            const image = (req.files) ? await uploadImage(req.files.image) : category.image;
+            const category_name = (name) ? name : category.name;
+            const updatedCategory = await category.update({name: category_name, image});
 
             return res.status(200).json({
                 error: false,

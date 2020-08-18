@@ -147,8 +147,6 @@ class UserController {
                 include: Order
             });
 
-            console.log('User: ', user);
-
             if (!user) return res.status(404).json({
                 error: true,
                 msg: 'User with this id does not exist'
@@ -185,13 +183,9 @@ class UserController {
                 msg: 'User not found'
             });
 
-            await User.update(req.body, {
-                where: {
-                    user_id: req.user.id
-                }
-            });
 
-            const updatedUser = await User.findByPk(req.user.id);
+
+            const updatedUser = await user.update(req.body);
 
             return res.status(201).json({
                 error: false,

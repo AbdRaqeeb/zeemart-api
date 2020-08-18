@@ -187,13 +187,8 @@ class AdminController {
                 msg: 'Admin not found'
             });
 
-             await Admin.update(req.body, {
-                where: {
-                    admin_id: req.user.id
-                }
-            });
 
-            const updatedUser = await Admin.findByPk(req.user.id);
+            const updatedUser = await admin.update(req.body);
 
             return res.status(201).json({
                 error: false,
@@ -221,15 +216,9 @@ class AdminController {
             if (!admin) return res.status(404).json({
                 error: true,
                 msg: 'Admin not found'
-            })
-
-            await Admin.update({ status}, {
-                where: {
-                    admin_id: id
-                }
             });
 
-            const updatedAdmin = await Admin.findByPk(id);
+            const updatedAdmin = await admin.update({ status });
 
             return res.status(200).json({
                 error: false,

@@ -21,12 +21,10 @@ class ProductController {
      * @access Private
      * */
     static async addProduct(req, res) {
-        const {error} = validateProduct(req.body);
+        const {error} = validateProduct(req.body, 1);
         if (error) return res.status(400).json(error.details[0].message);
 
-        const image = uploadImage(req.files.image, 1);
-
-        const {name, description, unit, price, sale_price, quantity, discount} = req.body;
+        const {name, description, unit, price, sale_price, quantity, discount, category_id} = req.body;
         try {
             const check = await Product.findOne({
                 where: {
@@ -40,6 +38,14 @@ class ProductController {
                 msg: 'Product already exists'
             });
 
+            if (!req.files) return res.status(400).json({
+                error: true,
+                msg: 'Please upload an image'
+            });
+
+            // Key 1 to upload image to product folder
+            const image = await uploadImage(req.files.image, 1);
+
             const product = await Product.create({
                 name,
                 description,
@@ -48,7 +54,9 @@ class ProductController {
                 sale_price,
                 quantity,
                 discount,
-                image
+                image,
+                category_id,
+                admin_id: req.user.id
             });
 
             return res.status(201).json({
@@ -135,20 +143,7 @@ class ProductController {
         const {error} = validateProduct(req.body);
         if (error) return res.status(400).json(error.details[0].message);
 
-        const image = uploadImage(req.files.image, 1);
-
         const { name, description, unit, price, sale_price, quantity, discount } = req.body;
-
-        //updateFile Object
-        const updateFile = {};
-        if (name) updateFile.name = name;
-        if (description) updateFile.description = description;
-        if (unit) updateFile.unit = unit;
-        if (price) updateFile.price = price;
-        if (sale_price) updateFile.sale_price = sale_price;
-        if (quantity) updateFile.quantity = quantity;
-        if (discount) updateFile.discount = discount;
-        updateFile.image = image;
 
         const { id } = req.params;
         try {
@@ -158,6 +153,18 @@ class ProductController {
                 error: true,
                 msg: 'Product not found'
             });
+
+            const image = (req.files) ? await uploadImage(req.files.image, 1) : product.image ;
+            //updateFile Object
+            const updateFile = {};
+            if (name) updateFile.name = name;
+            if (description) updateFile.description = description;
+            if (unit) updateFile.unit = unit;
+            if (price) updateFile.price = price;
+            if (sale_price) updateFile.sale_price = sale_price;
+            if (quantity) updateFile.quantity = quantity;
+            if (discount) updateFile.discount = discount;
+            updateFile.image = image;
 
             const updatedProduct = await product.update(updateFile);
 

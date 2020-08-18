@@ -3,30 +3,34 @@ import fs from 'fs';
 import folders from './folders';
 
 /**
- *@desc upload photo to cloudinary
- * @returns {url} image url from cloudinary
+ *@desc upload photo to Cloudinary
  **/
 
 export async function uploadImage(image, key) {
-    let imageFile = image;
+    try {
+        let imageFile = image;
 
-    //image file path
-    const filePath = `./src/photos/image${Date.now()}.jpg`;
+        //image file path
+        const filePath = `./src/photos/image${Date.now()}.jpg`;
 
-    //move image to the photo directory
-    await imageFile.mv(filePath);
+        //move image to the photo directory
+        await imageFile.mv(filePath);
 
-    // conditionals to know folder name t
-    const folder_name = (key === 1) ? folders.product : folders.categories;
+        // conditionals to know folder name t
+        const folder_name = (key === 1) ? folders.product : folders.categories;
 
-    //upload image to cloudinary
-    const result = await cloudinary.uploader.upload(filePath, {
-        folder: folder_name
-    });
+        //upload image
+        const result = await cloudinary.uploader.upload(filePath, {
+            folder: folder_name
+        });
 
-    // Delete image on server after upload
-    fs.unlinkSync(filePath);
-    console.log('Photo deleted');
+        // Delete image on server after upload
+        fs.unlinkSync(filePath);
+        console.log('Photo deleted');
 
-    return result.secure_url
+        return result.secure_url
+    } catch (e) {
+        console.error(e.message)
+    }
+
 }
