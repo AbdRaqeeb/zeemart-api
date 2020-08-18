@@ -1,11 +1,9 @@
 import { Order, OrderDetails, Payment } from '../../../database/models';
 import db from '../../../database/models/index';
 import { validateOrder } from '../../../middleware/Validate';
-import {generatedReference} from '../../../helpers/generator';
+import { generateReference } from '../../../helpers/generator';
 
 import { getPagingData, getPagination } from '../../../middleware/Pagination';
-
-const Op = db.Sequelize.Op;
 
 /**
  *@class  Orders
@@ -30,7 +28,7 @@ class OrderController {
                 const result = await db.sequelize.transaction(async t => {
                     const order = await Order.create({
                         amount: data.amount,
-                        reference: generatedReference,
+                        reference: await generateReference(6),
                         address: data.address,
                         customer_id: req.user.id,
                         user_id: req.user.id,
@@ -50,7 +48,7 @@ class OrderController {
                         order_id: order.order_id
                     }));
 
-                    await OrderDetails.bulkCreate(newOrderDetail, { transaction: t, validate: true, returning: true });
+                    await OrderDetails.bulkCreate(newOrderDetail, { transaction: t, validate: true });
 
                     return {
                         order,
@@ -62,7 +60,7 @@ class OrderController {
                     result
                 })
         } catch (e) {
-            console.error(e.message);
+            console.error(e);
             res.status(500).send('Internal server error...')
         }
     }
@@ -75,24 +73,18 @@ class OrderController {
      * @returns {json} json Order object
      **/
     static async getOrders(req, res) {
-        const { page, size, status } = req.query;
+        const { page, size } = req.query;
 
         const { limit, offset } = getPagination(page, size);
 
-        // Passing query
-        const condition = status ? {status: {[Op.like]: `%${status}%`}} : null;
-
         try {
             const data = await Order.findAndCountAll({
-                where: {
                     limit,
                     offset,
-                    condition
-                },
                 include: Payment
             });
 
-            if (!data) return res.status(404).json({
+            if (data.length === 0) return res.status(404).json({
                 error: true,
                 msg: 'No order found'
             });
@@ -149,17 +141,25 @@ class OrderController {
      * @returns {json} json Order object
      **/
     static async getCustomerOrders(req, res) {
+        const { page, size } = req.query;
+
+        const { limit, offset } = getPagination(page, size);
+
         try {
-            const orders = await Order.findAll({
+            const data = await Order.findAndCountAll({
+                limit,
+                offset,
                 where: {
-                    customer_id: req.user.user_id
+                    user_id: req.user.id
                 }
             });
 
-            if (!orders) return res.status(404).json({
+            if (data.length === 0) return res.status(404).json({
                 error: true,
                 msg: 'No orders for user'
             });
+
+            const orders = getPagingData(data, page, limit);
 
             return res.status(200).json({
                 error: false,
@@ -201,6 +201,39 @@ class OrderController {
         } catch (e) {
           console.error(e.message);
           res.status(500).send('Internal server error... ')
+        }
+    }
+
+    /**
+     *@static
+     * @desc  Change shipping date
+     * @param {object} req express req object
+     * @param {object} res express res object
+     * @returns {json} json Order object
+     **/
+    static async changeShippingDate(req, res) {
+        const { order_id, shipped_on } = req.body;
+        try {
+            const order = await Order.findByPk(order_id);
+            if (!order) return res.status(404).json({
+                error: true,
+                msg: 'Order not found'
+            });
+
+            const updatedOrder = await order.update({ shipped_on });
+            if (!updatedOrder) return res.status(404).json({
+                error: true,
+                msg: 'Error occurred'
+            });
+
+            return res.status(200).json({
+                error: false,
+                updatedOrder,
+                msg: 'Shipping date updated'
+            })
+        } catch (e) {
+            console.error(e.message);
+            res.status(500).send('Internal server error... ')
         }
     }
 }

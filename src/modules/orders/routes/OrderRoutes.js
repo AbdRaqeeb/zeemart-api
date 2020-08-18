@@ -5,12 +5,13 @@ import verify from '../../../middleware/verify';
 import Roles from '../../../helpers/roles';
 
 const router = Router();
-const { makeOrder, getCustomerOrders, getOneOrder, getOrders, changeOrderStatus } = OrderController;
+const { makeOrder, getCustomerOrders, getOneOrder, getOrders, changeOrderStatus, changeShippingDate } = OrderController;
 
 router.post('/', verify, makeOrder);
+router.get('/user', verify, getCustomerOrders);
 router.get('/', [verify, authorize([Roles.SuperAdmin, Roles.Admin])], getOrders);
 router.get('/:id', verify, getOneOrder);
-router.get('/user', verify, getCustomerOrders);
 router.put('/', [verify, authorize([Roles.SuperAdmin, Roles.Admin])], changeOrderStatus);
+router.put('/date', [verify, authorize([Roles.SuperAdmin, Roles.Admin])], changeShippingDate);
 
 export default router;
