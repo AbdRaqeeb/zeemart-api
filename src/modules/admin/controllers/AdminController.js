@@ -102,7 +102,7 @@ class AdminController {
             if (admin.status === 'ban' || admin.status === 'suspend') {
                 return res.status(400).json({
                     error: true,
-                    msg: 'Permission denied'
+                    msg: 'Permission denied, user cannot login'
                 })
             }
 
