@@ -40,13 +40,6 @@ app.get('/', (req, res) => res.send('Welcome to Zee Mart'));
 Cloudinary();
 
 
-const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
-});
-  
-client.connect();
-
 
 // Sync database
 Models.sequelize.sync()
