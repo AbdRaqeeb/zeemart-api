@@ -3,6 +3,8 @@ import 'dotenv/config';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 
+import { Client } from 'pg';
+
 import Cloudinary from './cloudinary/cloudinary';
 import Models from './database/models'
 
@@ -37,10 +39,21 @@ app.get('/', (req, res) => res.send('Welcome to Zee Mart'));
 // Connect to cloudinary
 Cloudinary();
 
+
+const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
+});
+  
+client.connect();
+
+
 // Sync database
 Models.sequelize.sync()
     .then(() => console.log('Database synced'))
     .catch(err => console.log('Unable to sync database', err));
+
+
 
 const PORT = process.env.PORT || 5000;
 
