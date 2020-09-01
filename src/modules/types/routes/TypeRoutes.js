@@ -10,7 +10,7 @@ const router = Router();
 router.post('/', [verify, authorize([Roles.SuperAdmin, Roles.Admin])], addType);
 router.get('/', getAllTypes);
 router.get('/:id', getOneType);
-router.put('/:id', [verify, authorize([Roles.SuperAdmin, Roles.Admin])], updateType);
+router.put('/', [verify, authorize([Roles.SuperAdmin, Roles.Admin])], updateType);
 router.delete('/:id', [verify, authorize([Roles.SuperAdmin, Roles.Admin])], deleteType);
 
 export default router;

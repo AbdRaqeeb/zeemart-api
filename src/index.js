@@ -1,6 +1,7 @@
 import express from 'express';
 import 'dotenv/config';
 import fileUpload from 'express-fileupload';
+import cors from 'cors';
 
 import Cloudinary from './cloudinary/cloudinary';
 import Models from './database/models'
@@ -14,6 +15,7 @@ import orders from './modules/orders/routes/OrderRoutes';
 import stats from './modules/stats/routes/StatRoutes';
 const app = express();
 
+app.use(cors());
 app.use(express.json({ extended: false }));
 app.use(fileUpload({
     limits:{

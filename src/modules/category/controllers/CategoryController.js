@@ -39,14 +39,19 @@ class CategoryController {
 
             const image = await uploadImage(req.files.image);
 
-            const category = await Category.create({
+            const category_file = await Category.create({
                 name,
                 image,
                 type_id: type
             });
 
+            const category = await Category.findByPk(category_file.id, {
+                include: Type
+            })
+
             return res.status(200).json({
                 error: false,
+                msg: 'Category added successfully',
                 category
             })
         } catch (e) {
@@ -64,7 +69,7 @@ class CategoryController {
      **/
     static async getCategories(req, res) {
         try {
-            const categories = await Category.findAndCountAll({
+            const categories = await Category.findAll({
                 include: Type
             });
 
@@ -124,8 +129,8 @@ class CategoryController {
         const {error} = validateCategory(req.body);
         if (error) return res.status(400).json(error.details[0].message);
 
-        const {name} = req.body;
-        const {id} = req.params;
+        const { id } = req.params;
+        const {name, type} = req.body;
         try {
             const category = await Category.findByPk(id);
 
@@ -136,11 +141,26 @@ class CategoryController {
 
             const image = (req.files) ? await uploadImage(req.files.image) : category.image;
             const category_name = (name) ? name : category.name;
-            const updatedCategory = await category.update({name: category_name, image});
+
+
+            const updated = await category.update({name: category_name, image, type});
+
+            if (!updated) return res.status(400).json({
+                error: true,
+                msg: 'Error on category update'
+            });
+
+            const updatedCategory = await Category.findByPk(id, {include: [
+                {
+                    model: Type
+                }
+            ]})
+
 
             return res.status(200).json({
                 error: false,
-                updatedCategory
+                updatedCategory,
+                msg: 'Category updated succesfully'
             })
         } catch (e) {
             console.error(e.message);

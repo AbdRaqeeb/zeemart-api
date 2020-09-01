@@ -38,6 +38,7 @@ class TypeController {
 
             return res.status(201).json({
                 error: false,
+                msg: 'Type added successfully',
                 type
             });
         } catch (e) {
@@ -56,7 +57,7 @@ class TypeController {
      */
     static async getAllTypes(req, res) {
         try {
-            const types = await Type.findAndCountAll();
+            const types = await Type.findAll();
 
             if (!types) return res.status(404).json({
                 error: true,
@@ -115,7 +116,7 @@ class TypeController {
         const {error} = validateType(req.body);
         if (error) return res.status(400).json(error.details[0].message);
 
-        const {id} = req.params;
+        const {id} = req.body;
         try {
             const type = await Type.findByPk(id);
 
@@ -128,11 +129,12 @@ class TypeController {
 
             return res.status(200).json({
                 error: false,
+                msg: 'Type updated successfully',
                 updatedType
             });
 
         } catch (e) {
-            console.error(e.message);
+            console.error(e);
             res.status(500).send('Internal server error...')
         }
     }

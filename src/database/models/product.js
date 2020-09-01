@@ -37,24 +37,21 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: true,
       validate: {
         isNumeric: true
       }
     },
     sale_price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0.0,
       validate: {
         isNumeric: true
       }
     },
-    quantity: {
-      type: DataTypes.SMALLINT,
-      allowNull: true
-    },
+    quantity:  DataTypes.BIGINT,
     discount: {
       type: DataTypes.SMALLINT,
       allowNull: true,

@@ -28,14 +28,16 @@ export function validateOrder(order, key) {
         phone: Joi.number().required(),
         comments: Joi.string().max(255).optional().allow(''),
         data: Joi.array().items(Joi.object()).required(),
-        type: Joi.string().optional()
+        type: Joi.string().optional(),
+        id: Joi.number().optional().allow('')
     });
     return schema.validate(order);
 }
 
 export function validateType(type) {
     const schema = Joi.object({
-        name: Joi.string().required()
+        name: Joi.string().required(),
+        id: Joi.number().optional().allow('')
     });
     return schema.validate(type);
 }
@@ -57,7 +59,17 @@ export function validateProduct(product, key) {
 export function validateCategory(category, key) {
     const schema = Joi.object({
         name: (key === 1) ? Joi.string().required().max(100) : Joi.string().optional(),
-        type: (key === 1) ? Joi.number().required() : Joi.number().optional()
+        type: (key === 1) ? Joi.number().required() : Joi.number().optional(),
+        id: Joi.number().optional().allow('')
     });
     return schema.validate(category);
+}
+
+
+export function validatePassword(password) {
+    const schema = Joi.object({
+        old_password: Joi.string().required().max(200).min(6),
+        new_password: Joi.string().required().max(200).min(6),
+    });
+    return schema.validate(password);
 }

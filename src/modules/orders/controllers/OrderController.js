@@ -1,4 +1,4 @@
-import { Order, OrderDetails, Payment } from '../../../database/models';
+import { Order, OrderDetails, Payment, User } from '../../../database/models';
 import db from '../../../database/models/index';
 import { validateOrder } from '../../../middleware/Validate';
 import { generateReference } from '../../../helpers/generator';
@@ -73,30 +73,29 @@ class OrderController {
      * @returns {json} json Order object
      **/
     static async getOrders(req, res) {
-        const { page, size } = req.query;
-
-        const { limit, offset } = getPagination(page, size);
 
         try {
-            const data = await Order.findAndCountAll({
-                    limit,
-                    offset,
-                include: Payment
+            const orders = await Order.findAll({
+                include: [
+                    {
+                        model: User,
+                        required: true
+                    },
+                    {
+                        model: Payment
+                    },
+                ]
             });
 
-            if (data.length === 0) return res.status(404).json({
+            if (orders.length === 0) return res.status(404).json({
                 error: true,
                 msg: 'No order found'
             });
 
-            const count = data.count;
-
-            const orders = getPagingData(data, page, limit);
 
             return res.status(200).json({
                 error: false,
                 orders,
-                count
             })
         } catch (e) {
             console.error(e.message);
@@ -179,7 +178,7 @@ class OrderController {
      * @returns {json} json Order object
      **/
     static async changeOrderStatus(req, res) {
-        const { status, order_id } = req.body;
+        const {  order_id } = req.body;
         try {
             const order = await Order.findByPk(order_id);
             if (!order) return res.status(404).json({
@@ -187,12 +186,23 @@ class OrderController {
                 msg: 'Order not found'
             });
 
-            const updatedOrder = await order.update({ status });
-            if (!updatedOrder) return res.status(404).json({
+            const updated = await order.update(req.body);
+
+            if (!updated) return res.status(404).json({
                 error: true,
                 msg: 'Error occurred'
             });
 
+            const updatedOrder = await Order.findByPk(order_id, {include: [
+                {
+                    model: User
+                },
+                {
+                    model: Payment
+                }
+            ]});
+
+        
             return res.status(200).json({
                 error: false,
                 updatedOrder,
@@ -203,39 +213,7 @@ class OrderController {
           res.status(500).send('Internal server error... ')
         }
     }
-
-    /**
-     *@static
-     * @desc  Change shipping date
-     * @param {object} req express req object
-     * @param {object} res express res object
-     * @returns {json} json Order object
-     **/
-    static async changeShippingDate(req, res) {
-        const { order_id, shipped_on } = req.body;
-        try {
-            const order = await Order.findByPk(order_id);
-            if (!order) return res.status(404).json({
-                error: true,
-                msg: 'Order not found'
-            });
-
-            const updatedOrder = await order.update({ shipped_on });
-            if (!updatedOrder) return res.status(404).json({
-                error: true,
-                msg: 'Error occurred'
-            });
-
-            return res.status(200).json({
-                error: false,
-                updatedOrder,
-                msg: 'Shipping date updated'
-            })
-        } catch (e) {
-            console.error(e.message);
-            res.status(500).send('Internal server error... ')
-        }
-    }
+   
 }
 
 export default OrderController;

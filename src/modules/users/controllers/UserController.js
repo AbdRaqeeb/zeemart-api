@@ -2,7 +2,7 @@ import 'dotenv/config'
 import { sign } from 'jsonwebtoken';
 import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
 
-import { User, Order } from '../../../database/models';
+import { User, Order, Payment } from '../../../database/models';
 import { validateUser, validateLogin }  from '../../../middleware/Validate';
 import {where} from "sequelize";
 
@@ -130,6 +130,37 @@ class UserController {
             res.status(500).send('Internal server error...')
         }
     }
+
+    /**
+     * @desc    login a customer
+     * @static
+     * @param {object} req express request object
+     * @param {object} res express response object
+     * @returns {token}  access token
+     * @access  Public
+     */
+    static async getUsers (req, res) {
+        try {
+            const users = await User.findAll({
+                include: Order, Payment
+            });
+
+            if (users.length === 0) return res.status(404).json({
+                error: true,
+                msg: 'No users found'
+            });
+
+            return res.status(200).json({
+                error: false,
+                users
+            })
+
+        } catch (e) {
+            console.error(e.message);
+            res.status(500).send('Internal server error')
+        }
+    }
+    
 
     /**
      * @desc    Get a logged in user

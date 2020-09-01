@@ -1,4 +1,4 @@
-import {Product} from '../../../database/models';
+import {Product, Category} from '../../../database/models';
 import { uploadImage } from '../../../helpers/upload';
 import {validateProduct} from '../../../middleware/Validate';
 import db from '../../../database/models/index';
@@ -61,10 +61,11 @@ class ProductController {
 
             return res.status(201).json({
                 error: false,
-                product
+                product,
+                msg: 'Product added successfully'
             })
         } catch (e) {
-            console.error(e.message);
+            console.error(e);
             res.status(500).send('Internal server error...');
         }
     }
@@ -77,23 +78,15 @@ class ProductController {
      * @returns {object} json product object
      **/
     static async getProducts(req, res) {
-        const {page, size, name} = req.query;
-
-        // Passing query
-        const condition = name ? {name: {[Op.like]: `%${name}%`}} : null;
-
-        const {limit, offset} = getPagination(page, size);
         try {
-            const data = await Product.findAndCountAll({
-                where: condition, limit, offset
+            const products = await Product.findAll({
+                include: Category
             });
 
-            if (!data) return res.status(404).json({
+            if (products.length === 0) return res.status(404).json({
                 error: true,
                 msg: 'No product found'
             });
-
-            const products = getPagingData(data, page, limit);
 
             return res.status(200).json({
                 error: false,
@@ -170,10 +163,11 @@ class ProductController {
 
             return res.status(200).json({
                 error: false,
-                updatedProduct
+                updatedProduct,
+                msg: 'Product updated successfully'
             })
         } catch (e) {
-            console.error(e.message);
+            console.error(e);
             res.status(500).send('Internal server error...');
         }
     }
