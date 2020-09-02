@@ -37,14 +37,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     price: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
       validate: {
         isNumeric: true
       }
     },
     sale_price: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0.0,
       validate: {

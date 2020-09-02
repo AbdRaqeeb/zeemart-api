@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     amount: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0.0,
       validate: {

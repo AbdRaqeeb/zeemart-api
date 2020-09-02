@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true
         },
         amount: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.DECIMAL(10, 2),
             allowNull: false,
             defaultValue: 0.0
         },
