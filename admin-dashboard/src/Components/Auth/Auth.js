@@ -63,7 +63,7 @@ const Auth = (props) => {
                     <div className="kt-login__container">
                         <div className="kt-login__logo">
                             <a href>
-                                <img src={loginImage} width="200px" height="200px" alt=""/>
+                                <img src={loginImage} width="80px" height="80px" alt=""/>
                             </a>
                         </div>
                         <div className="kt-login__signin">

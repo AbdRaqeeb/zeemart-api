@@ -6,7 +6,7 @@ const HeaderMobile = () => {
     return (
         <div id="kt_header_mobile" className="kt-header-mobile  kt-header-mobile--fixed ">
             <div className="kt-header-mobile__logo">
-                <img alt="Logo" src={bg} width="50px" height="50px" />
+                <img alt="Logo" src={bg} width="30px" height="50px" />
             </div>
             <div className="kt-header-mobile__toolbar">
                 <button className="kt-header-mobile__toggler kt-header-mobile__toggler--left"
