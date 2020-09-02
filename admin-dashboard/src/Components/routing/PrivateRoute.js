@@ -1,5 +1,5 @@
-import React, {useContext} from "react";
-import { Route, Redirect } from 'react-router-dom'
+import React, {useContext} from "./node_modules/react";
+import { Route, Redirect } from './node_modules/react-router-dom'
 import AuthContext from "../../context/auth/authContext";
 
 

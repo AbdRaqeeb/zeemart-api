@@ -13,7 +13,7 @@ import CustomerState from "./context/customers/CustomerState";
 import OrderState from "./context/orders/OrderState";
 import AdminState from "./context/admin/AdminState";
 import TypeState from "./context/type/TypeState";
-import PrivateRoute from "./components/routing/PrivateRoute";
+import PrivateRoute from "./Components/Routing/PrivateRoute";
 import setAuthToken from "./utils/setAuthToken";
 
 // CSS files
