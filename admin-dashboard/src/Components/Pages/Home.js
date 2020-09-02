@@ -1,4 +1,4 @@
-import React from './node_modules/react';
+import React from 'react';
 import Aside from "../layouts/Aside/Aside";
 import Main from "../layouts/Main/Main";
 
