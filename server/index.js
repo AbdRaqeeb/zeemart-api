@@ -38,8 +38,6 @@ app.use('/api/v1/categories', categories);
 app.use('/api/v1/orders', orders);
 app.use('/api/v1/stats', stats);
 
-app.get('/', (req, res) => res.send('Welcome to Zee Mart'));
-
 // Connect to cloudinary
 Cloudinary();
 
@@ -54,7 +52,8 @@ Models.sequelize.sync()
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
-    app.use(express.static('admin-dashboard/build'));
+    app.use(express.static(path.resolve(__dirname, '../admin-dashboard/build')));
+
 
     app.get('*', (req, res) =>
         res.sendFile(path.resolve(__dirname, '../admin-dashboard/build', 'index.html'))
