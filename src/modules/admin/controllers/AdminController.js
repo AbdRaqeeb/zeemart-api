@@ -123,7 +123,8 @@ class AdminController {
                 res.json({
                     error: false,
                     msg: 'Login successful',
-                    token
+                    token,
+                    admin
                 })
             })
 
