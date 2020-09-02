@@ -2,6 +2,7 @@ import express from 'express';
 import 'dotenv/config';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
+import path from 'path';
 
 import {
     Client
