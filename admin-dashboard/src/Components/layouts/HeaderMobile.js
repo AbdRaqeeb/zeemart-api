@@ -1,11 +1,12 @@
 import React from 'react';
+import bg from '../../assets/media/logos/log.png'
 
 
 const HeaderMobile = () => {
     return (
         <div id="kt_header_mobile" className="kt-header-mobile  kt-header-mobile--fixed ">
             <div className="kt-header-mobile__logo">
-                <img alt="Logo" src="https://res.cloudinary.com/abdraqeeb/image/upload/c_scale,h_69,w_103/v1599057344/mart_prqgta.png"/>
+                <img alt="Logo" src={bg} width="50px" height="50px" />
             </div>
             <div className="kt-header-mobile__toolbar">
                 <button className="kt-header-mobile__toggler kt-header-mobile__toggler--left"

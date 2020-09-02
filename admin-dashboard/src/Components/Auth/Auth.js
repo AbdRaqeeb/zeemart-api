@@ -1,5 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import AuthContext from '../../context/auth/authContext';
+import loginImage from '../../assets/media/logos/log.png';
 import bg from '../../assets/media/misc/bg-1.jpg';
 import {useSnackbar} from 'react-simple-snackbar';
 
@@ -62,7 +63,7 @@ const Auth = (props) => {
                     <div className="kt-login__container">
                         <div className="kt-login__logo">
                             <a href>
-                                <img src="https://res.cloudinary.com/abdraqeeb/image/upload/v1599057508/mart_gjpu9z.png" alt=""/>
+                                <img src={loginImage} width="200px" height="200px" alt=""/>
                             </a>
                         </div>
                         <div className="kt-login__signin">
