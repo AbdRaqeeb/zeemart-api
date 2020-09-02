@@ -3,7 +3,9 @@ import 'dotenv/config';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 
-import { Client } from 'pg';
+import {
+    Client
+} from 'pg';
 
 import Cloudinary from './cloudinary/cloudinary';
 import Models from './database/models'
@@ -18,9 +20,11 @@ import stats from './modules/stats/routes/StatRoutes';
 const app = express();
 
 app.use(cors());
-app.use(express.json({ extended: false }));
+app.use(express.json({
+    extended: false
+}));
 app.use(fileUpload({
-    limits:{
+    limits: {
         fileSize: 7 * 1024 * 1024
     }
 }));
@@ -45,6 +49,17 @@ Cloudinary();
 Models.sequelize.sync()
     .then(() => console.log('Database synced'))
     .catch(err => console.log('Unable to sync database', err));
+
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static('admin-dashboard/build'));
+
+    app.get('*', (req, res) =>
+        res.sendFile(path.resolve(__dirname, 'admin-dashboard', 'build', 'index.html'))
+    );
+}
 
 
 

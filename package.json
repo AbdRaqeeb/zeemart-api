@@ -6,10 +6,13 @@
   "scripts": {
     "clean": "rm -rf build && mkdir build",
     "start": "npm run build && node ./build/index.js",
-    "build-server": "babel -d ./build ./src -s",
-    "dev": "nodemon --exec babel-node  src/index.js",
+    "build-server": "babel -d ./build ./server -s",
+    "dev": "nodemon --exec babel-node  server/index.js",
     "build": "npm run clean && npm run build-server",
-    "sequelize": "sequelize db:migrate"
+    "admin-dashboard": "npm start --prefix admin-dashboard",
+    "admin-dashboardinstall": "npm install --prefix admin-dashboard",
+    "sequelize": "sequelize db:migrate",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix admin-dashboard && npm run build --prefix admin-dashboard"
   },
   "repository": {
     "type": "git",

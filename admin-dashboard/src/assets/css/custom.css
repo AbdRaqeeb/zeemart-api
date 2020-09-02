@@ -1,0 +1,32 @@
+
+.show_modal_custom {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    width: 80%;
+    transform: translateX(100%);
+    transition: transform 3s ease;
+}
+
+.show_product_form {
+    position: absolute;
+    top: 150px;
+    right: 0;
+    width: 60%;
+    display: none;
+}
+
+.show_order_detail {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    overflow-x: visible;
+    display: none;
+}
+
+.show_admin_form {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    display: none;
+}
