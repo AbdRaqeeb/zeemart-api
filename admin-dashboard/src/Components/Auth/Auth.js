@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import AuthContext from '../../context/auth/authContext';
 import loginImage from '../../assets/media/logos/login.png';
-import bg from '../../assets/media/misc/bg-1.jpg';
 import {useSnackbar} from 'react-simple-snackbar';
 
 const Auth = (props) => {
@@ -58,7 +57,7 @@ const Auth = (props) => {
     return (
         <div className="kt-grid kt-grid--hor kt-grid--root kt-login kt-login--v2 kt-login--signin" id="kt_login">
             <div className="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor"
-                 style={{backgroundImage: `url(${bg})`}}>
+                 style={{backgroundImage: url('https://res.cloudinary.com/abdraqeeb/image/upload/v1599057508/mart_gjpu9z.png')}}>
                 <div className="kt-grid__item kt-grid__item--fluid kt-login__wrapper">
                     <div className="kt-login__container">
                         <div className="kt-login__logo">
