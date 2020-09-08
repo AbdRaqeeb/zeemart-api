@@ -1,6 +1,5 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import AuthContext from '../../../../context/auth/authContext';
-import userPic from '../../../../assets/media/users/300_25.jpg';
 import Spinner from "../../Spinner";
 
 const NavbarProfile = ({ users, loading }) => {
@@ -32,7 +31,7 @@ const NavbarProfile = ({ users, loading }) => {
 
 
                 <div className="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x"
-                     style={{backgroundImage: `url(${bg})`}}>
+                     style={{backgroundImage: `url(https://res.cloudinary.com/dho9flazo/image/upload/v1599595579/dashboard/logos/bg-1_uiiwsq.jpg)`}}>
                     <div className="kt-user-card__avatar">
 
 
