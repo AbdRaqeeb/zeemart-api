@@ -24,12 +24,12 @@ const CustomerState = (props) => {
         try {
             const res = await axios.get('/api/v1/users/all');
 
-            await dispatch({
+            dispatch({
                 type: GET_CUSTOMERS,
                 payload: res.data.users
             });
         } catch (err) {
-            await dispatch({ type: CUSTOMER_ERROR, payload: err.response.data });
+            dispatch({ type: CUSTOMER_ERROR, payload: err.response.data });
         }
     };
 

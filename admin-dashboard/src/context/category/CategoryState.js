@@ -34,12 +34,12 @@ const CategoryState = (props) => {
         try {
             const res = await axios.get('/api/v1/categories');
 
-           await dispatch({
+           dispatch({
                 type: GET_CATEGORY,
                 payload: res.data.categories
             });
         } catch (err) {
-            await dispatch({ type: CATEGORY_ERROR, payload: err.response.data });
+            dispatch({ type: CATEGORY_ERROR, payload: err.response.data });
         }
     };
 
@@ -54,9 +54,7 @@ const CategoryState = (props) => {
         try {
             const res = await axios.post('/api/v1/categories', category, config);
             dispatch({ type: ADD_CATEGORY, payload: res.data });
-            console.log('DATA: ', res.data)
         } catch (err) {
-            console.log(err.response);
             dispatch({ type: CATEGORY_ERROR, payload: err.response.data });
         }
     };
@@ -68,7 +66,6 @@ const CategoryState = (props) => {
 
             dispatch({ type: DELETE_CATEGORY, payload: id });
         } catch (err) {
-            console.log(err.response);
             dispatch({ type: CATEGORY_ERROR, payload: err.response.data });
         }
     };

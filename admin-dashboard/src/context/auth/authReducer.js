@@ -69,7 +69,6 @@ export default (state, action) => {
             };
 
         case UPDATE_PASSWORD:
-            console.log("PASSWORD: ", action.payload);
             return {
                 ...state,
                 msg: action.payload.msg,

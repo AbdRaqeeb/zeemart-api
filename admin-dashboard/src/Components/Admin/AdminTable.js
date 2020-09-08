@@ -218,7 +218,7 @@ const AdminTable = ({ filtered, admins }) => {
 
                     {/*end::Form*/}
                 </div>
-                <div className="kt-portlet show_modal_custom" style={waiting ? updateStyle : null}>
+                <div className="kt-portlet show_admin_status" style={waiting ? updateStyle : null}>
                     <div className="kt-portlet__head">
                         <div className="kt-portlet__head-label">
                             <h3 className="kt-portlet__head-title">
@@ -387,7 +387,7 @@ const AdminTable = ({ filtered, admins }) => {
 };
 
 const updateStyle = {
-    transform: `translateX(0)`
+    display: "block"
 };
 
 const showForm = {

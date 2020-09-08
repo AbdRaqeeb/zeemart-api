@@ -35,6 +35,14 @@
     display: none;
 }
 
+.show_admin_status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 80%;
+    display: none;
+}
+
 @media (max-width: 1024px) {
     .show_mobile_now {
         display: block;

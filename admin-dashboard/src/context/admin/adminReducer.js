@@ -23,7 +23,6 @@ export default (state, action) => {
             };
 
         case ADD_ADMIN:
-            console.log('DATA', action.payload);
             return {
                 ...state,
                 admins: [ action.payload.admin, ...state.admins ],
@@ -32,7 +31,6 @@ export default (state, action) => {
             };
 
         case UPDATE_ADMIN_STATUS:
-            console.log('UPDATE: ', action.payload);
             return {
                 ...state,
                 admins: state.admins.map((admin) =>

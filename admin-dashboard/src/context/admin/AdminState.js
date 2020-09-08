@@ -33,12 +33,12 @@ const AdminState = (props) => {
         try {
             const res = await axios.get('/api/v1/admin/all');
 
-            await dispatch({
+            dispatch({
                 type: GET_ADMINS,
                 payload: res.data.admins
             });
         } catch (err) {
-            await dispatch({ type: ADMIN_ERROR, payload: err.response.data });
+            dispatch({ type: ADMIN_ERROR, payload: err.response.data });
         }
     };
 
@@ -54,9 +54,7 @@ const AdminState = (props) => {
             const res = await axios.post('/api/v1/admin', admin, config);
 
             dispatch({ type: ADD_ADMIN, payload: res.data });
-            console.log("ADD: ", res.data)
         } catch (err) {
-            console.log("ERROR: ", err.response);
             dispatch({ type: ADMIN_ERROR, payload: err.response.data });
         }
     };
@@ -72,10 +70,8 @@ const AdminState = (props) => {
 
         try {
             const res = await axios.put('/api/v1/admin/status', admin_status, config);
-            console.log(res.data);
             dispatch({ type: UPDATE_ADMIN_STATUS, payload: res.data });
         } catch (err) {
-            console.log(err.response);
             dispatch({ type: ADMIN_ERROR, payload: err.response.data });
         }
     };
@@ -88,7 +84,6 @@ const AdminState = (props) => {
 
             dispatch({ type: DELETE_ADMIN, payload: id });
         } catch (err) {
-            console.log(err.response);
             dispatch({ type: ADMIN_ERROR, payload: err.response.data });
         }
     };

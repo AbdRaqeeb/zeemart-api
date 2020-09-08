@@ -65,11 +65,8 @@ const AuthState = (props) => {
                 type: LOGIN_SUCCESS,
                 payload: res.data,
             });
-            console.log("ADMIN: ", res.data);
             await loadUser();
         } catch (err) {
-            console.log("ERROR Response: ", err.response);
-            console.log('ERROR: ', err);
             dispatch({
                 type: LOGIN_FAIL,
                 payload: err.response.data,

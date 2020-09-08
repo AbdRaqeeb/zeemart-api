@@ -33,12 +33,11 @@ const OrderState = (props) => {
         try {
             const res = await axios.get('/api/v1/orders');
 
-            await dispatch({
+            dispatch({
                 type: GET_ORDERS,
                 payload: res.data.orders
             });
         } catch (err) {
-            console.log(err.response);
             dispatch({ type: ORDER_ERROR, payload: err.response.data });
         }
     };
@@ -47,12 +46,11 @@ const OrderState = (props) => {
         try {
             const res = await axios.get(`/api/v1/orders/${id}`);
 
-            await dispatch({
+            dispatch({
                 type: GET_ORDER,
                 payload: res.data.order
             })
         } catch (err) {
-            console.log(err.response);
             dispatch({ type: ORDER_ERROR, payload: err.response.data })
         }
     };
@@ -71,7 +69,7 @@ const OrderState = (props) => {
                  order,
                  config
              );
-            await dispatch({ type: UPDATE_ORDER, payload: res.data });
+            dispatch({ type: UPDATE_ORDER, payload: res.data });
          } catch (err) {
              dispatch({ type: ORDER_ERROR, payload: err.response.data });
          }

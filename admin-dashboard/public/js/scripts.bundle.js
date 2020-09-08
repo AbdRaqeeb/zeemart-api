@@ -334,6 +334,11 @@ var KTApp = function() {
 $(document).ready(function() {
     KTApp.init(KTAppOptions);
 });
+
+
+$(document).ajaxComplete(function() {
+    KTApp.init(KTAppOptions);
+});
 "use strict";
 /**
  * @class KTUtil  base utilize class that privides helper functions

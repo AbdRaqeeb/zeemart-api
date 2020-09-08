@@ -88,10 +88,8 @@ const ProductState = (props) => {
                 formData,
                 config
             );
-            console.log("DATA: ", res.data);
             dispatch({ type: UPDATE_PRODUCT, payload: res.data });
         } catch (err) {
-            console.log(err.response);
             dispatch({ type: PRODUCT_ERROR, payload: err.response.data });
         }
     };

@@ -34,12 +34,12 @@ const TypeState = (props) => {
         try {
             const res = await axios.get('/api/v1/types');
 
-            await dispatch({
+            dispatch({
                 type: GET_TYPE,
                 payload: res.data.types
             });
         } catch (err) {
-            await dispatch({ type: TYPE_ERROR, payload: err.response.data });
+            dispatch({ type: TYPE_ERROR, payload: err.response.data });
         }
     };
 
@@ -56,7 +56,6 @@ const TypeState = (props) => {
 
             dispatch({ type: ADD_TYPE, payload: res.data });
         } catch (err) {
-            console.log(err.response.data);
             dispatch({ type: TYPE_ERROR, payload: err.response.data });
         }
     };
@@ -88,7 +87,6 @@ const TypeState = (props) => {
             );
             dispatch({ type: UPDATE_TYPE, payload: res.data });
         } catch (err) {
-            console.log(err.response);
             dispatch({ type: TYPE_ERROR, payload: err.response.data });
         }
     };
