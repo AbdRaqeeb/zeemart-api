@@ -1,10 +1,9 @@
 import React, {Fragment} from 'react';
-import spinner from '../../assets/media/Spinner/spinner.gif'
 
 const Spinner = () => {
     return (
         <Fragment>
-            <img src={spinner} alt="" style={{ width:'200px', margin: 'auto', display: 'block' }}/>
+            <img src="https://res.cloudinary.com/dho9flazo/image/upload/v1599595854/dashboard/logos/spinner_hiw1g4.gif" alt="" style={{ width:'200px', margin: 'auto', display: 'block' }}/>
         </Fragment>
     );
 };

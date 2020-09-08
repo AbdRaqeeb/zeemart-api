@@ -1,7 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import AuthContext from '../../../../context/auth/authContext';
 import userPic from '../../../../assets/media/users/300_25.jpg';
-import bg from '../../../../assets/media/misc/bg-1.jpg';
 import Spinner from "../../Spinner";
 
 const NavbarProfile = ({ users, loading }) => {
@@ -21,8 +20,6 @@ const NavbarProfile = ({ users, loading }) => {
                 <div className="kt-header__topbar-user">
                     <span className=" kt-header__topbar-welcome kt-hidden-mobile">Hi,</span>
                     <span className=" kt-header__topbar-username kt-hidden-mobile">{users.firstname}</span>
-                    <img className="kt-hidden" alt="Pic" src={userPic}/>
-
 
                     <span
                         className="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bolder">
@@ -37,7 +34,6 @@ const NavbarProfile = ({ users, loading }) => {
                 <div className="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x"
                      style={{backgroundImage: `url(${bg})`}}>
                     <div className="kt-user-card__avatar">
-                        <img className="kt-hidden" alt="Pic" src={userPic}/>
 
 
                         <span className="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">

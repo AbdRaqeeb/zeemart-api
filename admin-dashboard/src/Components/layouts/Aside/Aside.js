@@ -9,8 +9,10 @@ import '../../../assets/css/skin/menu.css';
 const Aside = () => {
     return (
         <Fragment>
-            <button className="kt-aside-close " id="kt_aside_close_btn"><i className="la la-close"></i></button>
-            <div className={style} id="kt_aside">
+            <button style={{ transform: 'translateX(-40px)' }} className="kt-aside-close " id="kt_aside_close_btn">
+                <i className="la la-close"/>
+            </button>
+            <div className={style} style={styling} id="kt_aside">
                 <AsideLogo />
                 <AsideMenu />
             </div>
@@ -18,5 +20,11 @@ const Aside = () => {
     );
 };
 
-const style = "kt-aside  kt-aside--fixed  kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop";
+const style = "kt-aside kt-aside--fixed kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop";
+
+const styling = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+};
 export default Aside;

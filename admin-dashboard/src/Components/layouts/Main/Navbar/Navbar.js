@@ -24,12 +24,9 @@ const Navbar = () => {
 };
 
 const style = {
-    position: "absolute",
-    right: "0",
-    top: "10px",
-    // width: "20%",
-    // display: "flex",
-    // justifyContent: "space-between"
+    display: 'flex',
+    justifyContent: 'flex-end',
+    width: '100%'
 };
 
 export default Navbar;

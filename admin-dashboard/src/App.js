@@ -5,7 +5,7 @@ import 'popper.js';
 import 'bootstrap';
 import './assets/css/login.css';
 import SnackbarProvider from 'react-simple-snackbar';
-import Auth from "./Components/Auth/Auth";
+import Auth from "./components/Auth/Auth";
 import ProductState from './context/product/ProductState';
 import AuthState from './context/auth/AuthState';
 import CategoryState from "./context/category/CategoryState";
@@ -13,7 +13,7 @@ import CustomerState from "./context/customers/CustomerState";
 import OrderState from "./context/orders/OrderState";
 import AdminState from "./context/admin/AdminState";
 import TypeState from "./context/type/TypeState";
-import PrivateRoute from "./Components/Routing/PrivateRoute";
+import PrivateRoute from "./components/routing/PrivateRoute";
 import setAuthToken from "./utils/setAuthToken";
 
 // CSS files
@@ -21,13 +21,14 @@ import './assets/css/App.css';
 import './assets/css/style.css';
 import './assets/css/custom.css';
 import './assets/fonts/flaticon/flaticon.css';
+import './assets/fonts/flaticon2/flaticon2.css';
 import './assets/fonts/line-awesome/line-awesome.css';
 import './assets/fonts/fontawesome/css/fontawesome.css';
 import 'typeface-poppins';
 import 'typeface-roboto';
 
-import HeaderMobile from "./Components/layouts/HeaderMobile";
-import Home from "./Components/Pages/Home";
+import HeaderMobile from "./components/layouts/HeaderMobile";
+import Home from "./components/pages/Home";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -43,17 +44,19 @@ const App = () => {
                             <ProductState>
                                 <OrderState>
                                     <Router>
-                                        <div className={body}>
-                                            <HeaderMobile/>
-                                            <div className={container}>
-                                                <SnackbarProvider>
-                                                    <Switch>
+                                        <SnackbarProvider>
+                                            <div className={body}>
+                                                <Switch>
+                                                    <div className={sign_container}>
                                                         <Route path="/login" component={Auth}/>
-                                                        <PrivateRoute path="/"  component={Home}/>
-                                                    </Switch>
-                                                </SnackbarProvider>
+                                                    </div>
+                                                    <HeaderMobile/>
+                                                    <div className={container}>
+                                                        <PrivateRoute path="/" component={Home}/>
+                                                    </div>
+                                                </Switch>
                                             </div>
-                                        </div>
+                                        </SnackbarProvider>
                                     </Router>
                                 </OrderState>
                             </ProductState>
@@ -62,12 +65,13 @@ const App = () => {
                 </CustomerState>
             </AdminState>
         </AuthState>
-    );
+    )
+        ;
 };
 
 
 const body = "kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--fixed kt-subheader--enabled kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading";
 const container = "kt-grid kt-grid--hor kt-grid--root";
-
+const sign_container = "kt-grid kt-grid--ver kt-grid--root";
 
 export default App;
