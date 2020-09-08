@@ -60,7 +60,7 @@ const Auth = (props) => {
                                 <div className="kt-login__container">
                                     <div className="kt-login__logo">
                                         <a href>
-                                            <img src="https://res.cloudinary.com/dho9flazo/image/upload/v1599595460/dashboard/logos/log_dbqs6k.png" alt=""/>
+                                            <img src="https://res.cloudinary.com/dho9flazo/image/upload/v1599595460/dashboard/logos/log_dbqs6k.png" width="80px" height="80px"  alt=""/>
                                         </a>
                                     </div>
                                     <div className="kt-login__signin">
