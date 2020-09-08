@@ -44,18 +44,11 @@ const App = () => {
                             <ProductState>
                                 <OrderState>
                                     <Router>
-                                        <SnackbarProvider>
-                                            <div className={body}>
-                                                <Switch>
-                                                    <div className={sign_container}>
-                                                        <Route path="/login" component={Auth}/>
-                                                    </div>
-                                                    <HeaderMobile/>
-                                                    <div className={container}>
-                                                        <PrivateRoute path="/" component={Home}/>
-                                                    </div>
-                                                </Switch>
-                                            </div>
+                                    <SnackbarProvider>
+                                            <Switch>
+                                                <Route path="/login" component={Auth}/>
+                                                <PrivateRoute path="/" component={Home}/>
+                                            </Switch>
                                         </SnackbarProvider>
                                     </Router>
                                 </OrderState>
