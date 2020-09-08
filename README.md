@@ -5,6 +5,6 @@ An admin dashboard for an e-commerce app where products can be added, orders vie
 
 FRONT END - REACT JS
 
-BACK END - NODE + EXPRESS SERVER
+BACK END - NODE.JS
 
 DATABASE - POSTGRES SQL
