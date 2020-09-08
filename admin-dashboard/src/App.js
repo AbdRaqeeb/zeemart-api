@@ -5,7 +5,7 @@ import 'popper.js';
 import 'bootstrap';
 import './assets/css/login.css';
 import SnackbarProvider from 'react-simple-snackbar';
-import Auth from "./components/Auth/Auth";
+import Auth from "./Components/Auth/Auth";
 import ProductState from './context/product/ProductState';
 import AuthState from './context/auth/AuthState';
 import CategoryState from "./context/category/CategoryState";
@@ -13,7 +13,7 @@ import CustomerState from "./context/customers/CustomerState";
 import OrderState from "./context/orders/OrderState";
 import AdminState from "./context/admin/AdminState";
 import TypeState from "./context/type/TypeState";
-import PrivateRoute from "./components/routing/PrivateRoute";
+import PrivateRoute from "./Components/Routing/PrivateRoute";
 import setAuthToken from "./utils/setAuthToken";
 
 // CSS files
@@ -27,8 +27,8 @@ import './assets/fonts/fontawesome/css/fontawesome.css';
 import 'typeface-poppins';
 import 'typeface-roboto';
 
-import HeaderMobile from "./components/layouts/HeaderMobile";
-import Home from "./components/pages/Home";
+import HeaderMobile from "./Components/layouts/HeaderMobile";
+import Home from "./Components/Pages/Home";
 
 if (localStorage.token) {
     setAuthToken(localStorage.token);
